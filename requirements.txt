@@ -1,0 +1,7 @@
+simpleaudio==1.0.4
+numba==0.58.1
+numpy==1.26.3
+Pillow==9.3.0
+pydub==0.25.1
+customtkinter==5.2.2
+tk==0.1.0
