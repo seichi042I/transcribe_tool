@@ -10,13 +10,15 @@ from pathlib import Path
 
 
 class AudioManager:
-    def __init__(self,parent:tk.Widget,wav_dirpath:Path,opts):
-        self.wav_list:List = [(wav_dirpath / f) for f in os.listdir(wav_dirpath) if f.endswith('.wav')]
-        self.listbox:tk.Listbox = tk.Listbox(parent,**opts)
+    def __init__(self,wav_dirpath:Path,opts):
+        self.wav_dirpath = wav_dirpath
+        self.wav_path_list = [(wav_dirpath / f) for f in os.listdir(wav_dirpath) if f.endswith('.wav')]
+        # self.listbox:tk.Listbox = tk.Listbox(parent,**opts)
         self.current_index:int = 0
         
-        for file in self.wav_list:
-            self.listbox.insert(tk.END, file)
+        # for file in wav_list:
+        #     self.listbox.insert(tk.END, file.stem)
+    
     def next(self):
         self.current_index += 1
         return
@@ -32,43 +34,54 @@ class AudioManager:
         return
         
     # ファイルを再生（スレッドで実行）
-    def play(self):
+    def play(self,stem):
+        name = stem+".wav"
+        print((self.wav_dirpath / name))
         def run():
-            self.current_audio = AudioSegment.from_file(self.wav_list[self.current_index])
+            self.current_audio = AudioSegment.from_file((self.wav_dirpath / name))
             play(self.current_audio)
 
         thread = threading.Thread(target=run)
         thread.start()
     
     def on_select_item(self):
-        self.current_index = self.listbox.curselection()[0]
-        self.play()
+        # self.current_index = self.listbox.curselection()[0]
+        # self.play()
         return 'break'
         
         
     def play_previous(self,args:Dict = {}):
-        if self.wav_list:  # リストが空でないことを確認
-            self.back()
+        # if self.wav_list:  # リストが空でないことを確認
+        #     if args['current_cursor_position']:
+        #         self.current_index = args['current_cursor_position']
+        #     self.back()
             
-            self.listbox.selection_clear(0, tk.END)
-            self.listbox.selection_set(self.current_index)
+        #     self.listbox.selection_clear(0, tk.END)
+        #     self.listbox.selection_set(self.current_index)
             
-            self.play()
+        #     self.play()
+        self.play(args['stem'])
         return "break"
 
     def play_current(self,args:Dict = {}):
-        if self.wav_list:
-            if args['current_cursor_position']:
-                self.current_index = args['current_cursor_position']
-            self.play()
+        # if self.wav_list:
+        #     if args['current_cursor_position']:
+        #         self.current_index = args['current_cursor_position']
+        #     self.play()
+        self.play(args['stem'])
+        
         return "break"
 
     def play_next(self,args:Dict = {}):
-        if self.wav_list:  # リストが空でないことを確認
-            self.next()
+        # if self.wav_list:  # リストが空でないことを確認
+        #     if args['current_cursor_position']:
+        #         self.current_index = args['current_cursor_position']
+        #     self.next()
             
-            self.listbox.selection_clear(0, tk.END)
-            self.listbox.selection_set(self.current_index)
+        #     self.listbox.selection_clear(0, tk.END)
+        #     self.listbox.selection_set(self.current_index)
             
-            self.play()
+        #     self.play()
+        self.play(args['stem'])
+        
         return "break"
