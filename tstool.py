@@ -25,15 +25,12 @@ def create_app(wav_dirpath,text_file=None):
     root.geometry("800x600")
     root.title("ts tool")
 
+    # 再生管理マン作成
+    audio_manager = AudioManager(wav_dirpath)
+    
     # テキストエディタの作成
     os_font = get_os_specific_font()
-    text_widget = ctk.CTkTextbox(root, font=os_font, wrap="none",undo=True)  # CustomTkinterのテキストウィジェット
-    bg_color = text_widget._fg_color[1]
-    fg_color = text_widget._fg_color[0]
-    
-    # リストボックスの作成
-    audio_manager = AudioManager(wav_dirpath, {"font": os_font,"bg":bg_color,"fg":fg_color})
-    # audio_manager.listbox.bind("<Double-1>", lambda e: audio_manager.on_select_item())
+    text_widget = ctk.CTkTextbox(root, font=os_font, wrap="none",undo=True)
     
     # テキストファイルの読み込み
     save_filepath = wav_dirpath.parent / "transcript_utf8_edit.txt"
@@ -44,8 +41,20 @@ def create_app(wav_dirpath,text_file=None):
             stem = path.stem
             text_widget.insert("end", f"{stem}:\n")
     
-    # 再生ショートカット
-    def play_step(text_widget,audio_manager,diff):
+    # プログレスバーの作成
+    pg_frame = ctk.CTkFrame(root)
+    label = ctk.CTkLabel(pg_frame, text="0%",font=os_font)
+    progress_bar = ctk.CTkProgressBar(pg_frame,height=20,progress_color="green")
+    progress_bar.grid(row=0, column=0, padx=10, pady=10,sticky='ew')
+    label.grid(row=0, column=1, padx=10, pady=0)
+    pg_frame.grid_columnconfigure(0, weight=1)
+    
+    # 配置
+    text_widget.pack(fill='both',expand=True)
+    pg_frame.pack(fill='x')
+    
+    # 再生操作
+    def play_step(text_widget,audio_manager,diff, pg_ber=None,label=None):
         index = text_widget.index("insert")
         line_idx = int(index.split(".")[0])
         position = int(index.split(".")[1])
@@ -56,11 +65,19 @@ def create_app(wav_dirpath,text_file=None):
         text_widget.mark_set('insert',f'{line_idx+diff}.{position}')
         text_widget.see("insert")
         
+        max_line = int(text_widget.index('end-1c').split('.')[0])
+        if pg_ber is not None:
+            pg_ber.set((line_idx-1)/max_line)
+            
+        if label is not None:
+            label.configure(text=f"{(line_idx-1)/max_line*100:.1f}%")
+        
+        
         return 'break'
     
-    text_widget.bind('<Control-Shift-Return>', lambda e: play_step(text_widget,audio_manager,-1))
-    text_widget.bind('<Shift-space>', lambda e: play_step(text_widget,audio_manager,0))
-    text_widget.bind('<Shift-Return>', lambda e: play_step(text_widget,audio_manager,1))
+    text_widget.bind('<Control-Shift-Return>', lambda e: play_step(text_widget,audio_manager,-1,progress_bar,label))
+    text_widget.bind('<Shift-space>', lambda e: play_step(text_widget,audio_manager,0,progress_bar,label))
+    text_widget.bind('<Shift-Return>', lambda e: play_step(text_widget,audio_manager,1,progress_bar,label))
     
     # カーソル移動
     def mv_cursor(text_widget:ctk.CTkTextbox,direction:str):
@@ -136,7 +153,6 @@ def create_app(wav_dirpath,text_file=None):
     
     text_widget.bind('<Tab>', lambda e: get_current_line_text(text_widget))
     
-    text_widget.pack(fill='both',expand=True)
     
     # 保存ボタンの作成
     save_button = ctk.CTkButton(root, text="Save", command=lambda: save_text(save_filepath, text_widget))
