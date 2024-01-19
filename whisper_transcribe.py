@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 def recurrent_transcribe(directory:Path, model_size:str = 'large-v3'):
     """指定されたディレクトリ以下のすべてのWAVファイルを文字起こしする"""
-    model = whisper_transcribe.load_model(model_size)
+    model = whisper.load_model(model_size)
 
     for root, dirs, files in os.walk(directory):
         rootpath = Path(root)
