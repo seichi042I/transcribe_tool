@@ -23,7 +23,7 @@ def load_text_file(file_path, text_widget):
 def save_text(file_path, text_widget):
     try:
         with open(str(file_path), 'w', encoding='utf-8') as file:
-            file.write(text_widget.get('1.0', ctk.END))
+            file.write(text_widget.get('1.0', 'end'))
         print("ファイルが保存されました")
     except Exception as e:
         print(f"保存中にエラーが発生しました: {e}")
