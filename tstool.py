@@ -48,6 +48,7 @@ def create_app(wav_dirpath,text_file=None):
     progress_bar.grid(row=0, column=0, padx=10, pady=10,sticky='ew')
     label.grid(row=0, column=1, padx=10, pady=0)
     pg_frame.grid_columnconfigure(0, weight=1)
+    progress_bar.set(0)
     
     # 配置
     text_widget.pack(fill='both',expand=True)
