@@ -26,7 +26,7 @@ class AudioManager:
                 play(self.current_audio)
             except:
                 dir = OWNPATH.parent / "system_voice" / "play_error"
-                sound = self.play_error_sound_list[random.randint(0,4)]
+                sound = self.play_error_sound_list[random.randint(0,3)]
                 _audio = AudioSegment.from_file(dir/sound)
                 play(_audio)
 
