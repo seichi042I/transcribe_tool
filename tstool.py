@@ -36,14 +36,13 @@ def create_app(wav_dirpath,text_file=None):
     # audio_manager.listbox.bind("<Double-1>", lambda e: audio_manager.on_select_item())
     
     # テキストファイルの読み込み
-    save_filepath = text_file
+    save_filepath = wav_dirpath.parent / "transcript_utf8_edit.txt"
     if text_file:
         load_text_file(text_file, text_widget)
     else:
         for path in audio_manager.wav_path_list:
             stem = path.stem
             text_widget.insert("end", f"{stem}:\n")
-        save_filepath = wav_dirpath.parent / "transcript_utf8_edit.txt"
     
     # 再生ショートカット
     def play_step(text_widget,audio_manager,diff):
