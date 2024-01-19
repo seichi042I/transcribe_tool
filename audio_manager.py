@@ -10,7 +10,7 @@ import random
 OWNPATH = Path(__file__)
 
 class AudioManager:
-    def __init__(self,wav_dirpath:Path,opts):
+    def __init__(self,wav_dirpath:Path):
         self.wav_dirpath = wav_dirpath
         self.wav_path_list = [(wav_dirpath / f) for f in os.listdir(wav_dirpath) if f.endswith('.wav')]
         self.current_index:int = 0
