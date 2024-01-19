@@ -52,7 +52,7 @@ python tstool.py <音声ファイルディレクトリ> [書き起こしファ�
 # whisper による書き起こし
 
 ```bash
-python whisper.py <音声ファイルディレクトリ>
+python whisper_transcribe.py <音声ファイルディレクトリ>
 ```
 
 実行すると、音声ファイルがあるディレクトリの親ディレクトリに書き起こしファイルが生成されます。
