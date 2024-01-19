@@ -75,10 +75,8 @@ def create_app(wav_dirpath,text_file=None):
             n = 5
         
         if d == "u":
-            audio_manager.back()
             text_widget.mark_set('insert',f'{line-n}.{position}')
         elif d == "d":
-            audio_manager.next()
             text_widget.mark_set('insert',f'{line+n}.{position}')
         elif d == "r":
             text_widget.mark_set('insert',f'insert + {n}c')
